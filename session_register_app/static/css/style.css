@@ -1,0 +1,14 @@
+input.green:focus {
+    border-color: rgb(35, 194, 35);
+    box-shadow: 0 0 0 0.25rem rgb(77 236 48 / 30%)
+}
+input.red:focus {
+    border-color: rgb(246 118 118);
+    box-shadow: 0 0 0 0.25rem rgb(248 40 40 / 20%)
+}
+input.green {
+    border-color: rgb(35, 194, 35);
+}
+input.red {
+    border-color: rgb(246 118 118);
+}

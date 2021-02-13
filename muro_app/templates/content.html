@@ -1,0 +1,66 @@
+
+{% for m in mensajes %}
+    <div class="row mx-auto mb-4 bg-secondary" style="border-radius: 1rem!important;">
+        <p class="col-10 text-info">{{m.user.fname}} {{m.user.lname}} - {{m.create_at | date:"d/m/Y"}}, {{m.create_at | time:"h:i a"}}</p>
+        
+        {% if m.user.id == usuario.id %}
+            {% if m.id in delete %}  {% comment %} condición para permitir borrar el mensaje solo dentro de los primeros 30 min que fue creado {% endcomment %}
+            <div class="btn-group col-2 d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    ...
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <form class="form_dinamic" action="/muro/deletemsg" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="id_mes" value="{{m.id}}">
+                            <input type="submit" class="dropdown-item" value="eliminar">
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        {% endif %}
+
+        <div class="col-10 ms-4 mb-4">
+            <p class="text-light">{{m.message}}</p>
+
+            {% for com in m.comments.all%}
+                <div class="row mx-auto mb-2 bg-dark" style="border-radius: 1rem!important;">
+                    <p class="col-10 text-info">{{com.user.fname}} {{com.user.lname}} - {{com.create_at | date:"d/m/Y"}}, {{com.create_at | time:"h:i a"}}</p>
+                    {% if m.user.id == usuario.id %}
+                    <div class="btn-group col-2 d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            ...
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form class="form_dinamic" action="/muro/deletecmt" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id_cmt" value="{{com.id}}">
+                                    <input type="submit" class="dropdown-item" value="eliminar">
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    <div class="col-10 ms-4">
+                        <p class="text-light">{{com.comment}}</p>
+                    </div>
+                    <hr class="bg-dark">
+                </div>
+            {% endfor %}
+
+            <div class="row">
+                <a class="text-dark com col-3" href="">comentar</a>
+            </div>
+            <form class="form_dinamic" style="display: none;" action="/muro/post_comment" method="post">
+                {% csrf_token %}
+                <textarea name="post_comment" style="resize: none;" class="form-control w-75 mess" rows="2"></textarea>
+                <input type="hidden" name="id_msg" value="{{m.id}}">
+                <input type="submit" class="btn" value="comentar">
+            </form>
+        </div>
+        <hr class="bg-dark">
+    </div>
+{% endfor %}

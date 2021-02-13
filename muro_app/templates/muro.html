@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Muro</title>
+    <style>
+        textarea.form-control {
+            background-color: #7e9eae
+        }
+        textarea.form-control:hover:focus {
+            background-color: #707070;
+        }
+        textarea.form-control:focus {
+            background-color: #707070;
+        }
+        .dropdown-toggle {
+            white-space: normal;
+        }
+        .btn-group-vertical>.btn, .btn-group>.btn {
+            position: relative;
+            flex: 0 1;
+        }
+        .btn-outline-light {
+        color: #f8f9fa;
+        border-color: #212529
+}
+    </style>
+</head>
+<body class="bg-dark">
+    <div class="container mt-5 p-4">
+        <div class="row">
+            <div class="col-7">
+                <h1 class="text-light">Muro de CodingDojo</h1>
+            </div>
+            <div class="col-3">
+                <p class="text-light">Bienvenido {{usuario.fname}} {{ usuario.lname }}</p>
+            </div>
+            <div class="col-2">
+                <form action="/logout/">
+                    {% csrf_token %}
+                    <input type="hidden" name="confirm" value="true">
+                    <input type="submit" class="btn btn-secondary" value="Cerrar sesión">
+                </form>
+            </div>
+        </div>
+        
+        <hr class="bg-light">
+
+        <div class="row mx-auto w-75">
+            <h4 class="text-light">Comentar algo en el muro:</h4>
+            <form class="form_nodinamic" action="/muro/post_message" id="for1" method="POST">
+                <div class="token">
+                    {% csrf_token %}
+                </div>
+                <div class="form-floating mb-4">
+                    <textarea name="post_message" style="height:100px; resize: none;" class="form-control" id="floatingTextarea"></textarea>
+                    <label for="floatingTextarea">Comentar algo</label>
+                </div>
+                <div class="col d-flex justify-content-end mb-5">
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+        <div class="mx-auto w-75" id="datos">
+        </div>
+    </div>
+    <script>
+
+        function atach(){
+
+            $('.com').click(function(a){
+                a.preventDefault()
+                $(this).parent().siblings('form').toggle()
+            });
+            $('.form_dinamic').submit(function(e){
+                e.preventDefault()
+                $.post($(this).attr('action'), $(this).serialize()).done(function(data){
+                    $('#datos').html(data)
+                    atach();
+                })
+                return false;
+            })
+        }
+
+
+        $(document).ready(function(){
+
+            $.get('/muro/content').done(function(data){
+                $('#datos').html(data)
+                atach();
+            });
+            
+            $('.form_nodinamic').submit(function(e){
+                e.preventDefault()
+                $.post($(this).attr('action'), $(this).serialize()).done(function(data){
+                    $('#datos').html(data)
+                    $('textarea').val('')
+                    atach();
+                })
+                return false;
+            })
+
+        });
+
+    </script>
+</body>
+</html>
